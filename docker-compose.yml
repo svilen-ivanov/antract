@@ -1,0 +1,19 @@
+services:
+  demo_service:
+    container_name: "antract_demo_service"
+    image: "nginxdemos/hello:plain-text"
+    ports:
+      - "127.0.0.1:8083:80"
+    shm_size: 256MB
+  antract:
+    container_name: "antract"
+    image: "openresty/openresty:alpine"
+    volumes:
+      - "./sample-nginx.conf:/etc/nginx/conf.d/default.conf:ro"
+      - "./antract.lua:/usr/local/openresty/nginx/antract/antract.lua:ro"
+      - "./antract_helpers.lua:/usr/local/openresty/nginx/antract/antract_helpers.lua:ro"
+    ports:
+      - "127.0.0.1:8082:8082"
+    shm_size: 256MB
+    depends_on:
+      - demo_service
