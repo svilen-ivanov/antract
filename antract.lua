@@ -4,8 +4,8 @@ local sleep_time = tonumber(ngx.var.antract_interval)
 local sleep_jitter_time = tonumber(ngx.var.antract_interval_jitter or 0)
 local max_time = tonumber(ngx.var.antract_max_time)
 local pausedreqs = ngx.shared.pausedreqs
-local health_check_path = ngx.var.antract_health_check_path
-local privileged_user_agent = ngx.var.antract_privileged_user_agent
+local health_check_path = ngx.var.antract_health_check_path or ""
+local privileged_user_agent = ngx.var.antract_privileged_user_agent or ""
 local enabled_key
 local req_count_key
 
@@ -37,13 +37,13 @@ end
 
 if pausedreqs:get(enabled_key) then
   --Pass healthchecks no matter what.
-  if ngx.var.uri == health_check_path then
+  if health_check_path ~= '' and ngx.var.uri == health_check_path then
     ngx.log(ngx.INFO, 'Passing through health check request: ' .. (ngx.var.uri or nil))
     return
   end
 
   --Pass special user agent no matter what. (Pingdom perhaps?)
-  if ngx.var.http_user_agent and ngx.var.http_user_agent ~= '' then
+  if ngx.var.http_user_agent and ngx.var.http_user_agent ~= '' and privileged_user_agent ~= '' then
     if string.match(ngx.var.http_user_agent, privileged_user_agent) then
       ngx.log(ngx.INFO, 'Passing through privileged user agent request: ' .. (ngx.var.http_user_agent or nil))
       return
