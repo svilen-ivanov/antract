@@ -16,8 +16,8 @@ I run a low traffic service which occasionally serves file uploads which I don't
 3. Shutdown the backend service and perform the maintenance
 4. Start the backend service
 5. Disable `antract` by calling `/_antract/disable` endpoint.
-  * held in-flight requests will be unblocked and served by the backend service. Any canceled requests by the client will not reach the backend service
-  * new requests will be served by the backend service as usual
+   * held in-flight requests will be unblocked and served by the backend service. Any canceled requests by the client will not reach the backend service
+   * new requests will be served by the backend service as usual
 
 Ideally, the time between steps 1 and 5 should be (much) less than `antract_max_time`, otherwise all queued requests will be automatically unblocked and served by the backend service as a fail-safe. If the service is not up, users will start seeing errors. 
 
