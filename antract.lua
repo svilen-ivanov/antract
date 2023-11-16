@@ -25,7 +25,7 @@ local function on_abort_handler()
     ngx.log(ngx.ERR, "Failed to decrement the req_count_key: " .. (err or 'unknown'))
   end
 
-  ngx.log(ngx.INFO, "Client was aborted, current in-flight request count: " .. (current_count or 'unknown'))
+  ngx.log(ngx.NOTICE, "Client was aborted, current in-flight request count: " .. (current_count or 'unknown'))
   ngx.exit(500)
 end
 
@@ -38,14 +38,14 @@ end
 if pausedreqs:get(enabled_key) then
   --Pass healthchecks no matter what.
   if health_check_path ~= '' and ngx.var.uri == health_check_path then
-    ngx.log(ngx.INFO, 'Passing through health check request: ' .. (ngx.var.uri or nil))
+    ngx.log(ngx.NOTICE, 'Passing through health check request: ' .. (ngx.var.uri or nil))
     return
   end
 
   --Pass special user agent no matter what. (Pingdom perhaps?)
   if ngx.var.http_user_agent and ngx.var.http_user_agent ~= '' and privileged_user_agent ~= '' then
     if string.match(ngx.var.http_user_agent, privileged_user_agent) then
-      ngx.log(ngx.INFO, 'Passing through privileged user agent request: ' .. (ngx.var.http_user_agent or nil))
+      ngx.log(ngx.NOTICE, 'Passing through privileged user agent request: ' .. (ngx.var.http_user_agent or nil))
       return
     end
   end
@@ -58,12 +58,12 @@ if pausedreqs:get(enabled_key) then
     ngx.log(ngx.ERR, "Failed to increment the req_count_key: " .. err)
     ngx.exit(500)
  end
-  ngx.log(ngx.INFO, 'Paused request #' .. request_count)
+  ngx.log(ngx.NOTICE, 'Paused request #' .. request_count)
 
   repeat
     -- Unpause this request if the enabled key is gone
     if pausedreqs:get(enabled_key) == nil then
-      ngx.log(ngx.INFO, "Unpause after " .. wait_time .. " seconds")
+      ngx.log(ngx.NOTICE, "Unpause after " .. wait_time .. " seconds")
 
       return
     else

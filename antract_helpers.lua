@@ -38,7 +38,7 @@ elseif endswith(ngx.var.uri, '/enable') then
   if enabled then
     local message = "Pause is already enabled, " .. paused_count .. " requests are currently paused."
     ngx.say(message)
-    ngx.log(ngx.INFO, message)
+    ngx.log(ngx.NOTICE, message)
     ngx.exit(200)
   end
 
@@ -58,7 +58,7 @@ elseif endswith(ngx.var.uri, '/enable') then
     ngx.exit(500)
   end
   local message = 'Pause is enabled.'
-  ngx.log(ngx.INFO, message)
+  ngx.log(ngx.NOTICE, message)
   ngx.say(message)
   ngx.exit(200)
 
@@ -66,7 +66,7 @@ elseif endswith(ngx.var.uri, '/disable') then
   if not enabled then
     local message = 'Pause is already disabled.'
     ngx.say(message)
-    ngx.log(ngx.INFO, message)
+    ngx.log(ngx.NOTICE, message)
     ngx.exit(200)
   end
 
@@ -74,7 +74,7 @@ elseif endswith(ngx.var.uri, '/disable') then
   pausedreqs:flush_all()
 
   local message = 'Pause is disabled. ' .. paused_count .. ' requests were held in-flight.'
-  ngx.log(ngx.INFO, message)
+  ngx.log(ngx.NOTICE, message)
   ngx.say(message)
 
   ngx.exit(200)
